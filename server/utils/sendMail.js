@@ -33,4 +33,4 @@ async function sendMailer(emailBody) {
 //   text: "Hi there",
 // });
 
-export default sendMailer
+export default sendMailer;

@@ -5,6 +5,20 @@ import {
   taskCreationValidationRules,
   errorMiddleware,
 } from "../../middleware/validations/index.js";
+import sendMailer from "../../utils/sendMail.js";
+import config from "config";
+import Agenda from "agenda";
+
+const agenda = new Agenda({
+  db: { address: config.get("DB_STRING"), collection: "agenda" },
+});
+
+const startAgenda = async () => {
+  await agenda.start();
+  console.log("Agenda scheduler started!");
+};
+
+startAgenda();
 
 const router = express.Router();
 
@@ -41,9 +55,9 @@ router.post(
         });
       }
 
-      let reminder1 = new Date(+presentTime - difference / 4);
-      let reminder2 = new Date(+presentTime - difference / 2);
-      let reminder3 = new Date(+presentTime - difference / (4 / 3));
+      let reminder1 = new Date(+presentTime + difference / 4);
+      let reminder2 = new Date(+presentTime + difference / 2);
+      let reminder3 = new Date(+presentTime + difference / (4 / 3));
 
       reminders.push(reminder1, reminder2, reminder3, deadlineUTC);
 
@@ -53,10 +67,22 @@ router.post(
         reminders,
       };
 
-      let tasks = await taskModel.findOne({ user: payload._id });
+      let tasks = await taskModel
+        .findOne({ user: payload._id })
+        .populate("user", "fname");
       tasks.tasks.push(taskData);
 
       await tasks.save();
+
+      reminders.map((ele, i) => {
+        agenda.schedule(ele, "sendReminder", {
+          reminder: true,
+          dateTime: ele,
+          i,
+          email: payload.email,
+          fname: tasks.user.fname,
+        });
+      });
 
       res
         .status(200)
@@ -67,5 +93,20 @@ router.post(
     }
   }
 );
+
+/*
+ subject: "This is a  Reminder",
+                    to: email,
+                    body: `Hi Saad, 
+                    This is a Reminder - ${i + 1} to Complete your Task ${task_name}`
+*/
+
+agenda.define("sendReminder", async (job) => {
+  sendMailer({
+    to: job.attrs.data.email,
+    subject: "Reminder",
+    text: `Hi,${job.attrs.data.fname}\nthis is your number ${job.attrs.data.i} reminder`,
+  });
+});
 
 export default router;
