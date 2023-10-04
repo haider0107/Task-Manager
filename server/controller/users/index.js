@@ -79,7 +79,7 @@ router.post("/login", async (req, res) => {
     if (!userFound) {
       return res
         .status(404)
-        .json({ error: "User mail has not been found/ does not exist" });
+        .json({ error: "email or passwod is incorrect" });
     }
 
     const isValid = await bcrypt.compare(req.body.password, userFound.password);
@@ -87,7 +87,7 @@ router.post("/login", async (req, res) => {
     if (!isValid) {
       return res
         .status(401)
-        .json({ error: "Invalid Credentials - Password is Invalid" });
+        .json({ error: "email or passwod is incorrect" });
     }
 
     let payload = { email: userFound.email, _id: userFound._id };

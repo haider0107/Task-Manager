@@ -28,6 +28,13 @@ function taskCreationValidationRules() {
   ];
 }
 
+function taskEditValidationRules() {
+  return [
+    body("taskName", "Please enter a valid task name").isString().optional(),
+    body("deadline", "Please enter a proper deadline").notEmpty().optional(),
+  ];
+}
+
 function errorMiddleware(req, res, next) {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
@@ -40,4 +47,5 @@ export {
   userRegistrationValidation,
   errorMiddleware,
   taskCreationValidationRules,
+  taskEditValidationRules
 };
