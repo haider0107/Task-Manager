@@ -8,7 +8,7 @@ function PrivateRoutes() {
     </>
   ) : (
     <>
-      <Navigate to="/login" />
+      <Navigate to="/" />
     </>
   );
 }

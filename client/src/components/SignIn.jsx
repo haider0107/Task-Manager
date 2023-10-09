@@ -28,12 +28,14 @@ function SignIn() {
   useEffect(() => {
     async function authCheck() {
       try {
-        let res = await axios.get("/api/user/auth", {
-          headers: {
-            "auth-token": JSON.parse(localStorage.getItem("token")),
-          },
-        });
-        navigate("/dashboard");
+        if (localStorage.getItem("token")) {
+          let res = await axios.get("/api/user/auth", {
+            headers: {
+              "auth-token": JSON.parse(localStorage.getItem("token")),
+            },
+          });
+          navigate("/dashboard");
+        }
       } catch (error) {
         console.log(error);
         localStorage.removeItem("token");

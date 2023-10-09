@@ -18,7 +18,9 @@ import axios from "axios";
 */
 
 const passwordRules = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-// min 5 characters, 1 upper case letter, 1 lower case letter, 1 numeric digit.
+const phoneRegex = /^[0-9]{8,10}$/
+
+// min 8 characters, 1 upper case letter, 1 lower case letter, 1 numeric digit.
 
 const schema = yup.object({
   fname: yup
@@ -38,8 +40,8 @@ const schema = yup.object({
   address: yup
     .string()
     .required("Address is required")
-    .min(4, "Address must contain 2 or more characters"),
-  phone: yup.string().required(),
+    .min(2, "Address must contain 3 or more characters"),
+  phone: yup.string().matches(phoneRegex, 'Phone number is not valid'),
   password: yup
     .string()
     .required("Password is required")
@@ -72,6 +74,7 @@ const SignUp = () => {
   const onSubmit = async (data) => {
     try {
       let res = await axios.post("/api/user/register", data);
+      console.log(res.data);
 
       setS(true);
       setTimeout(() => {
@@ -81,7 +84,6 @@ const SignUp = () => {
     } catch (error) {
       if (error.response) {
         const serverErrorData = error.response.data;
-        console.log(serverErrorData);
 
         // Update the form's error state with server errors
         setError("serverError", {
@@ -116,6 +118,7 @@ const SignUp = () => {
             ) : (
               ""
             )}
+            {console.log(errors.serverError)}
             {errors.serverError && (
               <p className=" text-sm mt-4 p-1 bg-red-600 text-white rounded-lg text-center">
                 {errors.serverError.message}
