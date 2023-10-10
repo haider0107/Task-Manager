@@ -8,7 +8,7 @@ function userRegistrationValidation() {
     body("phone", "Phone number is not valid").isMobilePhone(),
     body("address", "Address cannot be empty")
       .notEmpty()
-      .isLength({ min: 5, max: 40 }),
+      .isLength({ min: 3, max: 40 }),
     body("password", "password has to be strong")
       .notEmpty()
       .isLength({ min: 8 }),
