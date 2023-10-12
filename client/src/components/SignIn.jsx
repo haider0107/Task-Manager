@@ -99,7 +99,6 @@ function SignIn() {
           <form
             onSubmit={handleSubmit(onSubmit)}
             noValidate
-            action="#"
             className="mt-4 flex flex-col gap-4"
           >
             <div>

@@ -167,11 +167,9 @@ router.get("/", authMiddleware, async (req, res) => {
   try {
     const { _id } = req.payload;
 
-    let tasks = await taskModel.find({ user: _id }, "tasks");
+    let tasks = await taskModel.findOne({ user: _id }, "tasks");
 
-    tasks = tasks[0].tasks;
-
-    res.status(200).json({ tasks });
+    res.status(200).json({ success: "Task Fetched successfully", tasks });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error });
@@ -201,6 +199,23 @@ router.delete("/:task_id", authMiddleware, async (req, res) => {
   try {
     const { task_id } = req.params;
     const { _id } = req.payload;
+
+    let tasks = await taskModel.find({ user: _id }, "tasks");
+
+    let task = tasks[0].tasks.find((ele) => ele._id == taskId);
+
+    let jobIds = task.reminders.map((ele) => ele.jobId);
+
+    let agendaList = await agenda.jobs({ name: "sendReminder" });
+    agendaList.forEach((ele) => {
+      let job = ele;
+      jobIds.forEach((ele) => {
+        if (ele == job.attrs._id) {
+          // console.log("working");
+          job.remove();
+        }
+      });
+    });
 
     const remove = await taskModel.updateOne(
       { user: _id },
@@ -302,6 +317,7 @@ router.put(
           },
           {
             $set: {
+              "tasks.$.deadline": req.body.deadline,
               "tasks.$.reminders": reminders, // Use the positional operator ($) to update the name field
             },
           },
