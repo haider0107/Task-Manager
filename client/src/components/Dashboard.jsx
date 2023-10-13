@@ -13,11 +13,15 @@ import {
   TableContainer,
   useDisclosure,
   Button,
+  Box,
+  Checkbox,
+  Heading,
 } from "@chakra-ui/react";
 
 import DeleteModal from "./DeleteModal";
 import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
 import EditModal from "./EditModal";
+import Navbar from "./Navbar";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -69,7 +73,8 @@ const Dashboard = () => {
   }, [navigate]);
 
   return (
-    <>
+    <div className=" w-full h-screen">
+      <Navbar />
       <DeleteModal
         isDeleteOpen={isDeleteOpen}
         onDeleteOpen={onDeleteOpen}
@@ -82,57 +87,77 @@ const Dashboard = () => {
         onEditOpen={onEditOpen}
         selectedId={selectedId}
       />
-      <TableContainer>
-        <Table variant="striped" colorScheme="teal">
-          <TableCaption>Task Manager</TableCaption>
-          <Thead>
-            <Tr>
-              <Th>Task Name</Th>
-              <Th>Deadline</Th>
-              <Th>Status</Th>
-              <Th>Action</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data &&
-              data.map((ele, i) => {
-                let date = new Date(ele.deadline).toLocaleString();
-                return (
-                  <Tr key={i}>
-                    <Td>{ele.taskName}</Td>
-                    <Td>{date}</Td>
-                    <Td>{ele.isCompleted ? "Completed" : "Pending"}</Td>
-                    <Td>
-                      <Button
-                        colorScheme="red"
-                        onClick={() => {
-                          setSelectedId(ele._id);
-                          onDeleteOpen();
-                        }}
-                      >
-                        <AiFillDelete />
-                      </Button>
-                      <Button mx="5px" onClick={()=>{
-                        setSelectedId(ele._id);
-                        onEditOpen();
-                      }}>
-                        <AiTwotoneEdit />
-                      </Button>
-                    </Td>
-                  </Tr>
-                );
-              })}
-          </Tbody>
-          <Tfoot>
-            <Tr>
-              <Th>To convert</Th>
-              <Th>into</Th>
-              <Th>multiply by</Th>
-            </Tr>
-          </Tfoot>
-        </Table>
-      </TableContainer>
-    </>
+      <Box p="8">
+        <Heading className="underline underline-offset-8" mb={4}>
+          Todo's
+        </Heading>
+        <Box overflowY="auto" maxHeight="600px" borderRadius="20px">
+          <TableContainer>
+            <Table variant="striped" colorScheme="cyan">
+              <TableCaption>Task Manager</TableCaption>
+              <Thead position="sticky" top={0} bgColor="#279EF2">
+                <Tr>
+                  <Th></Th>
+                  <Th color="white">Task Name</Th>
+                  <Th color="white">Deadline</Th>
+                  <Th color="white">Status</Th>
+                  <Th color="white">Action</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {data &&
+                  data.map((ele, i) => {
+                    let date = new Date(ele.deadline).toLocaleString();
+                    return (
+                      <Tr key={i}>
+                        <Td>
+                          {ele.isCompleted ? (
+                            <Checkbox padding="2px" defaultChecked>Done</Checkbox>
+                          ) : (
+                            <Checkbox padding="2px">Done</Checkbox>
+                          )}
+                        </Td>
+                        <Td>{ele.taskName}</Td>
+                        <Td>{date}</Td>
+                        <Td>{ele.isCompleted ? "Completed" : "Pending"}</Td>
+                        <Td>
+                          <Button
+                            colorScheme="red"
+                            onClick={() => {
+                              setSelectedId(ele._id);
+                              onDeleteOpen();
+                            }}
+                          >
+                            <AiFillDelete />
+                          </Button>
+                          <Button
+                            mx="5px"
+                            onClick={() => {
+                              setSelectedId(ele._id);
+                              onEditOpen();
+                            }}
+                          >
+                            <AiTwotoneEdit />
+                          </Button>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
+              </Tbody>
+              <Tfoot>
+                <Tr>
+                  <Th></Th>
+                  <Th>Task Name</Th>
+                  <Th>Deadline</Th>
+                  <Th>Status</Th>
+                  <Th>Action</Th>
+                </Tr>
+              </Tfoot>
+            </Table>
+          </TableContainer>
+        </Box>
+      </Box>
+    </div>
   );
 };
 
