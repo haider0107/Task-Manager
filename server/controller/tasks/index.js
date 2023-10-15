@@ -5,6 +5,7 @@ import {
   taskCreationValidationRules,
   errorMiddleware,
   taskEditValidationRules,
+  taskCompleteValidationRules,
 } from "../../middleware/validations/index.js";
 import sendMailer from "../../utils/sendMail.js";
 import { agenda, startAgenda } from "../../utils/agenda.js";
@@ -202,7 +203,7 @@ router.delete("/:task_id", authMiddleware, async (req, res) => {
 
     let tasks = await taskModel.find({ user: _id }, "tasks");
 
-    let task = tasks[0].tasks.find((ele) => ele._id == taskId);
+    let task = tasks[0].tasks.find((ele) => ele._id == task_id);
 
     let jobIds = task.reminders.map((ele) => ele.jobId);
 
@@ -326,7 +327,44 @@ router.put(
           }
         );
       }
+
       res.status(200).json({ success: "Task edited successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error });
+    }
+  }
+);
+
+router.put(
+  "/isComplete/:task_id",
+  authMiddleware,
+  taskCompleteValidationRules(),
+  errorMiddleware,
+  async (req, res) => {
+    try {
+      let { task_id } = req.params;
+      let { isCompleted } = req.body;
+      const { _id } = req.payload;
+
+      console.log(req.body);
+
+      await taskModel.findOneAndUpdate(
+        {
+          user: _id,
+          "tasks._id": task_id,
+        },
+        {
+          $set: {
+            "tasks.$.isCompleted": isCompleted,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+
+      res.status(200).json({ success: "Task completed successfully" });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error });

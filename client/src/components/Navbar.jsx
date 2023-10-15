@@ -1,9 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/Landscape Skies Photo Collage YouTube Banner.png";
-import { Button, Tooltip } from "@chakra-ui/react";
+import { Button, Tooltip, useDisclosure } from "@chakra-ui/react";
+import AddModal from "./AddModal";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const {
+    isOpen: isAddOpen,
+    onOpen: onAddOpen,
+    onClose: onAddClose,
+  } = useDisclosure();
 
   function handleLogout() {
     localStorage.removeItem("token");
@@ -20,9 +26,21 @@ const Navbar = () => {
           style={{ width: "200px", height: "50px" }}
         />
       </Link>
+      <AddModal
+        isAddOpen={isAddOpen}
+        onAddClose={onAddClose}
+        onAddOpen={onAddOpen}
+      />
       <div className="flex">
         <Tooltip label="Add Task" openDelay={500}>
-          <Button mx="10px">ADD</Button>
+          <Button
+            mx="10px"
+            onClick={() => {
+              onAddOpen();
+            }}
+          >
+            ADD
+          </Button>
         </Tooltip>
         <Button px="20px" mx="4px" onClick={handleLogout}>
           LOGOUT

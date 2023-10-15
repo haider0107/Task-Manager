@@ -35,6 +35,10 @@ function taskEditValidationRules() {
   ];
 }
 
+function taskCompleteValidationRules() {
+  return body("isCompleted", "Please enter a valid data").isBoolean();
+}
+
 function errorMiddleware(req, res, next) {
   const errors = validationResult(req);
   if (errors.isEmpty()) {
@@ -47,5 +51,6 @@ export {
   userRegistrationValidation,
   errorMiddleware,
   taskCreationValidationRules,
-  taskEditValidationRules
+  taskEditValidationRules,
+  taskCompleteValidationRules,
 };

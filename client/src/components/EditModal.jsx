@@ -56,9 +56,10 @@ function EditModal({ isEditOpen, onEditOpen, onEditClose, selectedId }) {
   });
 
   const { register, handleSubmit, formState, reset } = form;
-  const { errors } = formState;
+  // const { errors } = formState;
 
   async function onSubmit(data) {
+    
     try {
       if (data.deadline) {
         let editData = {
@@ -72,9 +73,9 @@ function EditModal({ isEditOpen, onEditOpen, onEditClose, selectedId }) {
           },
         });
         console.log(res.data.success);
-      } else {
+      } else if(data.deadline === "") {
         let editData = {
-          deadline: data.deadline,
+          taskName: data.taskName,
         };
 
         let res = await axios.put(`/api/tasks/${selectedId}`, editData, {
@@ -85,9 +86,8 @@ function EditModal({ isEditOpen, onEditOpen, onEditClose, selectedId }) {
         console.log(res.data.success);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data.error);
     }
-    // console.log(data);
   }
 
   return (

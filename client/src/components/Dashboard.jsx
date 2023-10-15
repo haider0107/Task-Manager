@@ -22,6 +22,7 @@ import DeleteModal from "./DeleteModal";
 import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
 import EditModal from "./EditModal";
 import Navbar from "./Navbar";
+import AddModal from "./AddModal";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -72,6 +73,24 @@ const Dashboard = () => {
     fetchData();
   }, [navigate]);
 
+  async function Completed(task_id,isCompleted) {
+    try {
+      let data = {
+        isCompleted: !isCompleted,
+      };
+
+      let res = await axios.put(`/api/tasks/isComplete/${task_id}`, data, {
+        headers: {
+          "auth-token": JSON.parse(localStorage.getItem("token")),
+        },
+      });
+
+      console.log(res.data.success);
+    } catch (error) {
+      console.log(error.response.data.error);
+    }
+  }
+
   return (
     <div className=" w-full h-screen">
       <Navbar />
@@ -111,11 +130,11 @@ const Dashboard = () => {
                     return (
                       <Tr key={i}>
                         <Td>
-                          {ele.isCompleted ? (
-                            <Checkbox padding="2px" defaultChecked>Done</Checkbox>
-                          ) : (
-                            <Checkbox padding="2px">Done</Checkbox>
-                          )}
+                          <Checkbox padding="2px" isChecked={ele.isCompleted} onChange={()=>{
+                            Completed(ele._id,ele.isCompleted)
+                          }}>
+                            Done
+                          </Checkbox>
                         </Td>
                         <Td>{ele.taskName}</Td>
                         <Td>{date}</Td>
