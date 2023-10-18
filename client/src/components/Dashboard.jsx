@@ -28,6 +28,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState("");
+  // const
   const {
     isOpen: isEditOpen,
     onOpen: onEditOpen,
@@ -73,17 +74,30 @@ const Dashboard = () => {
     fetchData();
   }, [navigate]);
 
-  async function Completed(task_id,isCompleted) {
+  async function Completed(task_id, isCompleted) {
     try {
-      let data = {
+      let dataChecked = {
         isCompleted: !isCompleted,
       };
 
-      let res = await axios.put(`/api/tasks/isComplete/${task_id}`, data, {
-        headers: {
-          "auth-token": JSON.parse(localStorage.getItem("token")),
-        },
+      let res = await axios.put(
+        `/api/tasks/isComplete/${task_id}`,
+        dataChecked,
+        {
+          headers: {
+            "auth-token": JSON.parse(localStorage.getItem("token")),
+          },
+        }
+      );
+
+      let newData = data.map((ele) => {
+        if (ele._id == task_id) {
+          ele.isCompleted = !isCompleted;
+        }
+        return ele;
       });
+
+      setData(newData);
 
       console.log(res.data.success);
     } catch (error) {
@@ -130,9 +144,13 @@ const Dashboard = () => {
                     return (
                       <Tr key={i}>
                         <Td>
-                          <Checkbox padding="2px" isChecked={ele.isCompleted} onChange={()=>{
-                            Completed(ele._id,ele.isCompleted)
-                          }}>
+                          <Checkbox
+                            padding="2px"
+                            isChecked={ele.isCompleted}
+                            onChange={() => {
+                              Completed(ele._id, ele.isCompleted);
+                            }}
+                          >
                             Done
                           </Checkbox>
                         </Td>
