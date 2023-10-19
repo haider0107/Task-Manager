@@ -3,7 +3,7 @@ import Logo from "../assets/Landscape Skies Photo Collage YouTube Banner.png";
 import { Button, Tooltip, useDisclosure } from "@chakra-ui/react";
 import AddModal from "./AddModal";
 
-const Navbar = () => {
+const Navbar = ({fetchAgain,setFetchAgain}) => {
   const navigate = useNavigate();
   const {
     isOpen: isAddOpen,
@@ -30,6 +30,8 @@ const Navbar = () => {
         isAddOpen={isAddOpen}
         onAddClose={onAddClose}
         onAddOpen={onAddOpen}
+        fetchAgain={fetchAgain}
+        setFetchAgain={setFetchAgain}
       />
       <div className="flex">
         <Tooltip label="Add Task" openDelay={500}>

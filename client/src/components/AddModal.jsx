@@ -44,7 +44,13 @@ const schema = yup.object({
   deadline: yup.string().required("Enter a deadline."),
 });
 
-function AddModal({ isAddOpen, onAddOpen, onAddClose }) {
+function AddModal({
+  isAddOpen,
+  onAddOpen,
+  onAddClose,
+  fetchAgain,
+  setFetchAgain,
+}) {
   const form = useForm({
     defaultValues: {
       taskName: "",
@@ -69,6 +75,7 @@ function AddModal({ isAddOpen, onAddOpen, onAddClose }) {
         },
       });
       console.log(res.data.success);
+      setFetchAgain(!fetchAgain);
     } catch (error) {
       console.log(error.response.data.error);
     }

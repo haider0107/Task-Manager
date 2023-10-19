@@ -17,17 +17,17 @@ function DeleteModal({
   onDeleteOpen,
   isDeleteOpen,
   selectedId,
+  fetchAgain,
+  setFetchAgain,
 }) {
   async function deleteTask() {
     try {
-      let res = await axios.delete(
-        `/api/tasks/${selectedId}`,
-        {
-          headers: {
-            "auth-token": JSON.parse(localStorage.getItem("token")),
-          },
-        }
-      );
+      await axios.delete(`/api/tasks/${selectedId}`, {
+        headers: {
+          "auth-token": JSON.parse(localStorage.getItem("token")),
+        },
+      });
+      setFetchAgain(!fetchAgain);
     } catch (error) {
       console.log(error);
     }
@@ -41,9 +41,7 @@ function DeleteModal({
           <ModalHeader>DELETE</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <p>
-              Are you sure ?
-            </p>
+            <p>Are you sure ?</p>
           </ModalBody>
 
           <ModalFooter>

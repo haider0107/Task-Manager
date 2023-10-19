@@ -46,7 +46,14 @@ const schema = yup.object({
   deadline: yup.string(),
 });
 
-function EditModal({ isEditOpen, onEditOpen, onEditClose, selectedId }) {
+function EditModal({
+  isEditOpen,
+  onEditOpen,
+  onEditClose,
+  selectedId,
+  fetchAgain,
+  setFetchAgain,
+}) {
   const form = useForm({
     defaultValues: {
       taskName: "",
@@ -55,11 +62,10 @@ function EditModal({ isEditOpen, onEditOpen, onEditClose, selectedId }) {
     resolver: yupResolver(schema),
   });
 
-  const { register, handleSubmit, formState, reset } = form;
+  const { register, handleSubmit, reset } = form;
   // const { errors } = formState;
 
   async function onSubmit(data) {
-    
     try {
       if (data.deadline) {
         let editData = {
@@ -73,7 +79,8 @@ function EditModal({ isEditOpen, onEditOpen, onEditClose, selectedId }) {
           },
         });
         console.log(res.data.success);
-      } else if(data.deadline === "") {
+        setFetchAgain(!fetchAgain)
+      } else if (data.deadline === "") {
         let editData = {
           taskName: data.taskName,
         };
@@ -84,6 +91,7 @@ function EditModal({ isEditOpen, onEditOpen, onEditClose, selectedId }) {
           },
         });
         console.log(res.data.success);
+        setFetchAgain(!fetchAgain)
       }
     } catch (error) {
       console.log(error.response.data.error);

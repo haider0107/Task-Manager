@@ -22,12 +22,12 @@ import DeleteModal from "./DeleteModal";
 import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
 import EditModal from "./EditModal";
 import Navbar from "./Navbar";
-import AddModal from "./AddModal";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState("");
+  const [fetchAgain, setFetchAgain] = useState(false);
   // const
   const {
     isOpen: isEditOpen,
@@ -72,7 +72,7 @@ const Dashboard = () => {
 
     authCheck();
     fetchData();
-  }, [navigate]);
+  }, [navigate, fetchAgain]);
 
   async function Completed(task_id, isCompleted) {
     try {
@@ -107,18 +107,22 @@ const Dashboard = () => {
 
   return (
     <div className=" w-full h-screen">
-      <Navbar />
+      <Navbar fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
       <DeleteModal
         isDeleteOpen={isDeleteOpen}
         onDeleteOpen={onDeleteOpen}
         onDeleteClose={onDeleteClose}
         selectedId={selectedId}
+        fetchAgain={fetchAgain}
+        setFetchAgain={setFetchAgain}
       />
       <EditModal
         isEditOpen={isEditOpen}
         onEditClose={onEditClose}
         onEditOpen={onEditOpen}
         selectedId={selectedId}
+        fetchAgain={fetchAgain}
+        setFetchAgain={setFetchAgain}
       />
       <Box p="8">
         <Heading className="underline underline-offset-8" mb={4}>
