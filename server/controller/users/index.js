@@ -58,7 +58,7 @@ router.post(
       sendMailer({
         to: req.body.email,
         subject: "Account Created",
-        text: "Welcom to task manager",
+        text: `Welcom to task manager\nLink to verifiy your email : http://localhost:5000/api/user/verify/email/${user.userVerifyToken.email}`,
       });
     } catch (error) {
       console.error(error);
